@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val TAG = "mainActivityResponse"
 
@@ -42,9 +43,12 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
 //        }
-        
+
         recyclerView()
         loadData()
+//        val arrayList: ArrayList<ApiModel> = ArrayList()
+//        arrayList.add(ApiModel(1, "This is body", "This is title"))
+//        recAdapter.setData(arrayList)
         
     }
     
@@ -56,15 +60,17 @@ class MainActivity : AppCompatActivity() {
                     is ApiResponse.Loading -> Log.d(TAG, "loadData: Loading")
                     is ApiResponse.Success -> {
                         Log.d(TAG, "loadData: ${response.data}")
-//                        var arrayList: ArrayList<ApiModel> = ArrayList()
-                        recAdapter.setData(response.data as ArrayList<ApiModel>)
+                        withContext(Dispatchers.Main) {
+//                            tv.text = response.data.toString()
+                            recAdapter.setData(response.data as ArrayList<ApiModel>)
+                        }
                     }
                 }
             }
         }
     }
-    
-    
+
+
     private fun recyclerView() {
         recAdapter = RecyclerAdapter(this, ArrayList())
         val layout = LinearLayoutManager(this)
